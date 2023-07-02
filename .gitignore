@@ -131,3 +131,5 @@ dist
 
 # Dicoding
 *.pem
+.env
+.prod.env
