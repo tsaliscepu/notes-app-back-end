@@ -1,0 +1,23 @@
+{
+  "name": "notes-app-back-end",
+  "version": "1.0.0",
+  "description": "Pahami dasar-dasar dalam membangun RESTful API, mulai dari HTTP server, routing, hingga membangun Back-End untuk aplikasi yang nyata.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "tsaliscepu",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsaliscepu/notes-app-back-end.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tsaliscepu/notes-app-back-end/issues"
+  },
+  "homepage": "https://github.com/tsaliscepu/notes-app-back-end#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
