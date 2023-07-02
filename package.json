@@ -4,7 +4,8 @@
   "description": "Pahami dasar-dasar dalam membangun RESTful API, mulai dari HTTP server, routing, hingga membangun Back-End untuk aplikasi yang nyata.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/server.js",
+    "start-prod": "NODE_ENV=production node ./src/server.js",
+    "start-dev": "nodemon ./src/server.js",
     "lint": "eslint ./src"
   },
   "keywords": [],
