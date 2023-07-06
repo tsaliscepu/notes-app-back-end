@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e10cc4aa-698f-434b-a952-e444e034010b",
+		"_postman_id": "8a639a72-f43c-4186-bf5a-7f472056b1ea",
 		"name": "Notes API Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -346,6 +346,76 @@
 					"path": [
 						"notes",
 						"{{noteId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {\r",
+							"   pm.response.to.have.status(201);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('User berhasil ditambahkan');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body data should have userId property and not equal to empty', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.ownProperty('userId');\r",
+							"    pm.expect(data.userId).to.not.equals('');\r",
+							" \r",
+							"    pm.environment.set('currentUserId', data.userId);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"{{$timestamp}}-{{newUsername}}\",\r\n    \"password\" : \"{{newPassword}}\",\r\n    \"fullname\" : \"{{newFullname}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/users",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"users"
 					]
 				}
 			},
