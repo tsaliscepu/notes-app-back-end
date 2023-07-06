@@ -507,6 +507,98 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Adding User with Bad User Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let badUserPayloads = pm.environment.get('badUserPayloads');\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    badUserPayloads = [\r",
+							"        { password: 'secret', fullname: 'John Doe' },\r",
+							"        { username: 1, password: 'secret', fullname: 'John Doe' },\r",
+							"        { username: 'johndoe', fullname: 'John Doe' },\r",
+							"        { username: 'johndoe', password: true, fullname: 'John Doe' },\r",
+							"        { username: 'johndoe', password: 'secret'},\r",
+							"        { username: 'johndoe', password: 'secret', fullname: 0 },\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadUserPayload = badUserPayloads.shift();\r",
+							"pm.environment.set('currentBadUserPayload', JSON.stringify(currentBadUserPayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"   pm.response.to.have.status(400);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.not.equals(' ');\r",
+							"    pm.expect(responseJson.message).to.not.equals(null);\r",
+							"});\r",
+							" \r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badUserPayloads = pm.environment.get('badUserPayloads');\r",
+							" \r",
+							"    if(badUserPayloads && badUserPayloads.length > 0) {\r",
+							"        postman.setNextRequest('Adding User with Bad User Payload');\r",
+							"    }\r",
+							"}\r",
+							" \r",
+							"repeatRequestUntilDatasetEmpty();"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadUserPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/users",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
