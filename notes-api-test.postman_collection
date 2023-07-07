@@ -599,6 +599,74 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Getting User By Correct Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body data should contain user object', () => {\r",
+							"    const { data } = pm.response.json();\r",
+							" \r",
+							"    pm.expect(data).to.have.ownProperty('user');\r",
+							"    pm.expect(data.user).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('user object should contain only id, username, and fullname with correct value', () => {\r",
+							"    const { data: { user } } = pm.response.json();\r",
+							" \r",
+							"    pm.expect(user).to.have.ownProperty('id');\r",
+							"    pm.expect(user.id).to.equals(pm.environment.get('currentUserId'));\r",
+							"    pm.expect(user).to.have.ownProperty('username');\r",
+							"    pm.expect(user.username).to.includes(pm.environment.get('newUsername'));\r",
+							"    pm.expect(user).to.have.ownProperty('fullname');\r",
+							"    pm.expect(user.fullname).to.equals(pm.environment.get('newFullname'));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/users/{{currentUserId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"users",
+						"{{currentUserId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
