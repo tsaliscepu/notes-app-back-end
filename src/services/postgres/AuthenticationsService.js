@@ -20,7 +20,7 @@ class AuthenticationsService {
       text: 'SELECT token FROM authentications WHERE token = $1',
       values: [token],
     };
- 
+
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
@@ -33,7 +33,7 @@ class AuthenticationsService {
       text: 'DELETE FROM authentications WHERE token = $1',
       values: [token],
     };
- 
+
     await this._pool.query(query);
   }
 }
