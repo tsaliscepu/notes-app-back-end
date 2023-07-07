@@ -50,6 +50,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -140,6 +150,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -206,6 +226,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -282,6 +312,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -352,6 +392,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
@@ -445,6 +495,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
@@ -519,6 +579,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
@@ -897,6 +967,446 @@
 					"path": [
 						"users",
 						"xxxx"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Authentication with Valid Credentials",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const postRequest = {\r",
+							"    url: 'http://localhost:5000/users',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"    'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: 'testing',\r",
+							"            password: pm.environment.get('newPassword'),\r",
+							"            fullname: pm.environment.get('newFullname')\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							" \r",
+							"pm.sendRequest(postRequest, (error, response) => {\r",
+							"    console.log(error ? error : response.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {\r",
+							"   pm.response.to.have.status(201);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Authentication berhasil ditambahkan');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body data should have property accessToken and refreshToken with correct value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.have.ownProperty('accessToken');\r",
+							"    pm.expect(data.accessToken).to.not.equals('');\r",
+							"    pm.expect(data.accessToken).to.not.equals(null);\r",
+							"    pm.expect(data).to.have.ownProperty('refreshToken');\r",
+							"    pm.expect(data.refreshToken).to.not.equals('');\r",
+							"    pm.expect(data.refreshToken).to.not.equals(null);\r",
+							" \r",
+							" \r",
+							"    // menyimpan accessToken dan refreshToken di environment variable\r",
+							"    pm.environment.set('accessToken', data.accessToken);\r",
+							"    pm.environment.set('refreshToken', data.refreshToken);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"testing\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/authentications",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Authentication with Invalid Credential",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 401 value', () => {\r",
+							"   pm.response.to.have.status(401);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Kredensial yang Anda berikan salah');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"testing\",\r\n    \"password\": \"somebadpassword\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/authentications",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All Notes without Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 401 value', () => {\r",
+							"   pm.response.to.have.status(401);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/notes",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Authentication with Valid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Access Token berhasil diperbarui');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body data should have property accessToken with correct value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.have.ownProperty('accessToken');\r",
+							"    pm.expect(data.accessToken).to.not.equals('');\r",
+							"    pm.expect(data.accessToken).to.not.equals(null);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/authentications",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Authentications with Invalid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"   pm.response.to.have.status(400);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Refresh token tidak valid');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"xxxxx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/authentications",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Authentication with Valid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Refresh token berhasil dihapus');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/authentications",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Authentication with Invalid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"   pm.response.to.have.status(400);\r",
+							"}); \r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							" \r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Refresh token tidak valid');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"xxxxx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/authentications",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"authentications"
 					]
 				}
 			},
